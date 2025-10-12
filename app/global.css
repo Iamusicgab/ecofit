@@ -1,0 +1,25 @@
+@config "../tailwind.config.js";
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+@theme {
+	--color-green: #81d334;
+	--color-yellow: #f6ce44;
+}
+
+body {
+	font-family: "Quicksand", sans-serif;
+}
+
+.box-green {
+	box-shadow: 0 6px 0px rgba(129, 211, 52, 1);
+}
+
+.box-yellow {
+	box-shadow: 0 6px 0px rgba(246, 206, 68, 1);
+}
