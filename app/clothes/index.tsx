@@ -31,8 +31,8 @@ export default function Clothes() {
 			</View>
 
 			{/* Inventory Grid */}
-			<ScrollView 
-				className="flex-1 px-4" 
+			<ScrollView
+				className="px-4"
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ paddingBottom: 100 }}
 			>
@@ -42,7 +42,7 @@ export default function Clothes() {
 							<TouchableOpacity className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
 								{/* T-shirt Image */}
 								<View className="w-full h-32 bg-gray-100 rounded-lg mb-3 items-center justify-center">
-									<View 
+									<View
 										className="w-20 h-20 rounded-lg"
 										style={{ backgroundColor: item.color }}
 									>
@@ -52,15 +52,13 @@ export default function Clothes() {
 										</View>
 									</View>
 								</View>
-								
+
 								{/* Item Labels */}
 								<View className="items-center">
 									<Text className="text-lg font-bold text-black mb-1">
 										{item.name}
 									</Text>
-									<Text className="text-sm text-gray-600">
-										{item.status}
-									</Text>
+									<Text className="text-sm text-gray-600">{item.status}</Text>
 								</View>
 							</TouchableOpacity>
 						</View>

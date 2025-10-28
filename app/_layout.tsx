@@ -1,18 +1,18 @@
+import { useFonts } from "expo-font";
 import {
-	NativeTabs,
+	Badge,
 	Icon,
 	Label,
-	Badge,
+	NativeTabs,
 } from "expo-router/unstable-native-tabs";
 import "./global.css";
-import { useFonts } from "expo-font";
 
 export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
-		quicksand_regular: require("../assets/fonts/quicksand-regular.ttf"),
-		quicksand_medium: require("../assets/fonts/quicksand-medium.ttf"),
-		quicksand_bold: require("../assets/fonts/quicksand-bold.ttf"),
-		quicksand_semibold: require("../assets/fonts/quicksand-semibold.ttf"),
+		"Quicksand-Regular": require("../assets/fonts/quicksand-regular.ttf"),
+		"Quicksand-Medium": require("../assets/fonts/quicksand-medium.ttf"),
+		"Quicksand-Bold": require("../assets/fonts/quicksand-bold.ttf"),
+		"Quicksand-SemiBold": require("../assets/fonts/quicksand-semibold.ttf"),
 	});
 
 	if (!fontsLoaded) {

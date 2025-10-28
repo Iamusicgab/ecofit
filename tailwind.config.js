@@ -8,10 +8,10 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				quicksand_regular: ["quicksand-regular", "sans-serif"],
-				quicksand_medium: ["quicksand-medium", "sans-serif"],
-				quicksand_semibold: ["quicksand-semibold", "sans-serif"],
-				quicksand_bold: ["quicksand-bold", "sans-serif"],
+				quicksand_regular: ["Quicksand-Regular"],
+				quicksand_medium: ["Quicksand-Medium"],
+				quicksand_bold: ["Quicksand-Bold"],
+				quicksand_semibold: ["Quicksand-SemiBold"],
 			},
 		},
 	},
