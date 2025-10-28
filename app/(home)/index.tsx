@@ -1,10 +1,12 @@
-import { Image } from "expo-image";
-import { ScrollView, View } from "react-native";
+import { Image, ImageBackground } from "expo-image";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Greetings from "../components/Greetings";
+import List from "../components/home/List";
 import ReWear from "../components/home/ReWear";
 import WearIndex from "../components/home/WearIndex";
+let Rectangle = require("../../assets/images/rectangle.png");
 
 export default function Index() {
 	const months = [
@@ -21,7 +23,6 @@ export default function Index() {
 		{ name: "Nov", active: false, color: "gray" },
 		{ name: "Dec", active: false, color: "gray" },
 	];
-
 	const getMonthButtonStyle = (month: any) => {
 		if (!month.active) {
 			return "bg-white border-2 border-gray-300";
@@ -29,25 +30,68 @@ export default function Index() {
 
 		switch (month.color) {
 			case "red":
-				return "bg-red-500";
+				return "bg-red-500 border-red-300";
 			case "yellow":
-				return "bg-yellow-400";
+				return "bg-yellow-400 border-yellow-300";
 			case "green":
-				return "bg-green-500";
+				return "bg-green-500 border-green-300";
 			default:
 				return "bg-white border-2 border-gray-300";
 		}
 	};
 
 	const getMonthTextStyle = (month: any) => {
-		return month.active ? "text-white" : "text-gray-600";
+		return month.active
+			? "text-white font-quicksand_bold"
+			: "text-gray-600 font-quicksand_bold";
 	};
-
 	return (
 		<SafeAreaView className="flex-1 bg-white">
-			<ScrollView className="p-4" showsVerticalScrollIndicator={false}>
+			{/* Sticky Top Nav */}
+			<View
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					zIndex: 50,
+				}}
+			>
+				<ImageBackground
+					source={Rectangle}
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
+						padding: 16,
+						paddingVertical: 60,
+					}}
+				>
+					<Image
+						style={{ height: 50, width: 50 }}
+						contentFit="contain"
+						source={require("../../assets/images/logo.svg")}
+					/>
+					<Text className="text-4xl font-quicksand_bold text-white">
+						ecofit
+					</Text>
+					<Image
+						style={{
+							height: 50,
+							width: 50,
+							borderRadius: 15,
+							borderColor: "white",
+							borderWidth: 2,
+						}}
+						contentFit="cover"
+						source="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&fm=jpg&q=60&w=3000"
+					/>
+				</ImageBackground>
+			</View>
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<View className="py-10"></View>
 				{/* Div Container */}
-				<View className="flex-1 gap-8">
+				<View className="flex-1 gap-8 p-6">
 					<Greetings name="Christiane" />
 					{/* Stats Section */}
 					<View className="flex-row gap-4 justify-center items-center">
@@ -58,14 +102,34 @@ export default function Index() {
 						</View>
 						<View className="flex-2">
 							<Image
-								source={require("../../assets/images/robot.png")}
+								source={require("../../assets/images/robot-happy.png")}
 								style={{ height: 300 }}
 								contentFit="contain"
 							/>
 						</View>
 					</View>
+					{/* Monthly Buttons */}
+					<View className="flex-row flex-wrap gap-2 mb-6">
+						{months.map((month, index) => (
+							<TouchableOpacity
+								key={index}
+								className={`px-3 py-2 rounded-lg ${getMonthButtonStyle(month)}`}
+							>
+								<Text
+									className={`text-sm font-medium ${getMonthTextStyle(month)}`}
+								>
+									{month.name}
+								</Text>
+							</TouchableOpacity>
+						))}
+					</View>
 
 					{/* Recent ReWears */}
+					<View className="flex-1 gap-2">
+						<Text className="font-quicksand_medium">Recent ReWears</Text>
+
+						<List />
+					</View>
 				</View>
 			</ScrollView>
 		</SafeAreaView>

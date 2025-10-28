@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 
 function ReWear(props: any) {
 	return (
-		<View className="border-4 rounded-2xl p-4 border-green shadow-[0_6px_0px_rgba(129,211,52,1)] gap-2">
+		<View className="border-4 rounded-3xl p-4 border-green shadow-[0_6px_0px_rgba(129,211,52,1)] gap-2">
 			<View className="text-center flex-1 justify-center items-center">
 				<Text className="font-quicksand_semibold">Total ReWear</Text>
 				<Text className="font-quicksand_bold text-4xl">
