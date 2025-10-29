@@ -30,11 +30,11 @@ export default function Index() {
 
 		switch (month.color) {
 			case "red":
-				return "bg-red-500 border-red-300";
+				return "bg-red-500 border-2 border-red-300";
 			case "yellow":
-				return "bg-yellow-400 border-yellow-300";
+				return "bg-yellow-400 border-2 border-yellow-300";
 			case "green":
-				return "bg-green-500 border-green-300";
+				return "bg-green-500 border-2 border-green-300";
 			default:
 				return "bg-white border-2 border-gray-300";
 		}
@@ -88,7 +88,10 @@ export default function Index() {
 					/>
 				</ImageBackground>
 			</View>
-			<ScrollView showsVerticalScrollIndicator={false}>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ paddingBottom: 100 }}
+			>
 				<View className="py-10"></View>
 				{/* Div Container */}
 				<View className="flex-1 gap-8 p-6">

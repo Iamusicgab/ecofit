@@ -1,10 +1,13 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import {
 	Badge,
 	Icon,
 	Label,
 	NativeTabs,
+	VectorIcon,
 } from "expo-router/unstable-native-tabs";
+import { Platform } from "react-native";
 import "./global.css";
 
 export default function RootLayout() {
@@ -19,27 +22,63 @@ export default function RootLayout() {
 		return null; // or a loading spinner
 	}
 	return (
-		<NativeTabs>
+		<NativeTabs
+			minimizeBehavior="onScrollDown"
+			backgroundColor={Platform.select({
+				ios: "#FFFFFF",
+				android: "#F2FFE6",
+			})}
+			tintColor="#499600"
+			indicatorColor="#CEE9B5"
+		>
 			<NativeTabs.Trigger name="(home)/index">
 				<Label>Home</Label>
-				<Icon sf="house.fill" drawable="custom_home_drawable"></Icon>
+
+				{Platform.select({
+					ios: <Icon sf="house.fill" drawable="custom_home_drawable"></Icon>,
+					android: (
+						<Icon src={<VectorIcon family={Ionicons} name="home" />}></Icon>
+					),
+				})}
 			</NativeTabs.Trigger>
 			<NativeTabs.Trigger name="clothes">
 				<Label>Clothes</Label>
-				<Icon sf="hanger" drawable="custom_home_drawable"></Icon>
+				{Platform.select({
+					ios: <Icon sf="hanger" drawable="custom_home_drawable"></Icon>,
+					android: (
+						<Icon src={<VectorIcon family={Ionicons} name="shirt" />}></Icon>
+					),
+				})}
 			</NativeTabs.Trigger>
 			<NativeTabs.Trigger name="new">
 				<Label>Add</Label>
-				<Icon sf="plus" drawable="custom_home_drawable"></Icon>
+				{Platform.select({
+					ios: <Icon sf="plus" drawable="custom_home_drawable"></Icon>,
+					android: (
+						<Icon src={<VectorIcon family={Ionicons} name="add" />}></Icon>
+					),
+				})}
 			</NativeTabs.Trigger>
 			<NativeTabs.Trigger name="donate">
 				<Label>Donate</Label>
-				<Icon sf="heart" drawable="custom_home_drawable"></Icon>
+				{Platform.select({
+					ios: <Icon sf="heart" drawable="custom_home_drawable"></Icon>,
+					android: (
+						<Icon src={<VectorIcon family={Ionicons} name="heart" />}></Icon>
+					),
+				})}
 			</NativeTabs.Trigger>
 			<NativeTabs.Trigger name="grab">
 				<Label>Grab</Label>
 				<Badge>12</Badge>
-				<Icon sf="hand.app" drawable="custom_home_drawable"></Icon>
+				{Platform.select({
+					ios: <Icon sf="hand.app" drawable="custom_home_drawable"></Icon>,
+					android: (
+						<Icon
+							src={<VectorIcon family={Ionicons} name="hand-right" />}
+						></Icon>
+					),
+				})}
 			</NativeTabs.Trigger>
 		</NativeTabs>
 	);
