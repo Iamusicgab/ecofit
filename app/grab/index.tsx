@@ -1,6 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Alert, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+	Alert,
+	Modal,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Item {
@@ -42,7 +49,7 @@ export default function Grab() {
 			donor: "Sarah M.",
 			location: "Downtown Coffee Shop",
 			distance: "0.3 km",
-			coordinates: { latitude: 40.7128, longitude: -74.0060 },
+			coordinates: { latitude: 40.7128, longitude: -74.006 },
 			images: ["jacket1", "jacket2"],
 			condition: "Excellent",
 			rating: 4.8,
@@ -54,8 +61,8 @@ export default function Grab() {
 				fabric: "Denim",
 				wear: "Minimal",
 				cleanliness: "Excellent",
-				overall: 4.8
-			}
+				overall: 4.8,
+			},
 		},
 		{
 			id: 2,
@@ -76,8 +83,8 @@ export default function Grab() {
 				fabric: "Organic Cotton",
 				wear: "None",
 				cleanliness: "Perfect",
-				overall: 4.9
-			}
+				overall: 4.9,
+			},
 		},
 		{
 			id: 3,
@@ -98,8 +105,8 @@ export default function Grab() {
 				fabric: "Cotton Blend",
 				wear: "Light",
 				cleanliness: "Good",
-				overall: 4.5
-			}
+				overall: 4.5,
+			},
 		},
 		{
 			id: 4,
@@ -120,12 +127,12 @@ export default function Grab() {
 				fabric: "Tencel",
 				wear: "None",
 				cleanliness: "Perfect",
-				overall: 5.0
-			}
-		}
+				overall: 5.0,
+			},
+		},
 	];
 
-	const filteredItems = nearbyItems.filter(item => {
+	const filteredItems = nearbyItems.filter((item) => {
 		if (filter === "all") return true;
 		return item.category === filter;
 	});
@@ -143,13 +150,16 @@ export default function Grab() {
 			`Are you sure you want to grab "${item.title}" from ${item.donor}?`,
 			[
 				{ text: "Cancel", style: "cancel" },
-				{ 
-					text: "Grab It!", 
+				{
+					text: "Grab It!",
 					onPress: () => {
-						Alert.alert("Success!", "Item grabbed! You have 2 hours to pick it up.");
+						Alert.alert(
+							"Success!",
+							"Item grabbed! You have 2 hours to pick it up."
+						);
 						setShowQualityInspection(false);
-					}
-				}
+					},
+				},
 			]
 		);
 	};
@@ -158,7 +168,7 @@ export default function Grab() {
 		<View className="bg-green-500 px-4 py-6">
 			<View className="flex-row items-center justify-between">
 				<Text className="text-2xl font-bold text-white">Grab Nearby Items</Text>
-				<TouchableOpacity 
+				<TouchableOpacity
 					className="w-12 h-12 bg-green-600 rounded-full items-center justify-center"
 					onPress={() => setShowMap(!showMap)}
 				>
@@ -176,16 +186,18 @@ export default function Grab() {
 						<TouchableOpacity
 							key={category}
 							className={`px-4 py-2 rounded-full ${
-								filter === category 
-									? "bg-green-500" 
-									: "bg-gray-200"
+								filter === category ? "bg-green-500" : "bg-gray-200"
 							}`}
 							onPress={() => setFilter(category)}
 						>
-							<Text className={`font-medium ${
-								filter === category ? "text-white" : "text-gray-600"
-							}`}>
-								{category === "all" ? "All Items" : category.charAt(0).toUpperCase() + category.slice(1)}
+							<Text
+								className={`font-medium ${
+									filter === category ? "text-white" : "text-gray-600"
+								}`}
+							>
+								{category === "all"
+									? "All Items"
+									: category.charAt(0).toUpperCase() + category.slice(1)}
 							</Text>
 						</TouchableOpacity>
 					))}
@@ -210,29 +222,34 @@ export default function Grab() {
 						<Ionicons name="shirt" size={32} color="white" />
 					</View>
 				</View>
-				
+
 				{/* Item Details */}
 				<View className="flex-1">
 					<Text className="text-lg font-bold text-black mb-1">
 						{item.title}
 					</Text>
-					<Text className="text-sm text-gray-600 mb-2">
-						{item.description}
-					</Text>
-					
+					<Text className="text-sm text-gray-600 mb-2">{item.description}</Text>
+
 					{/* Donor and Location */}
 					<View className="flex-row items-center mb-2">
 						<Ionicons name="person" size={16} color="#6B7280" />
 						<Text className="text-sm text-gray-600 ml-1">{item.donor}</Text>
-						<Ionicons name="location" size={16} color="#6B7280" className="ml-3" />
+						<Ionicons
+							name="location"
+							size={16}
+							color="#6B7280"
+							className="ml-3"
+						/>
 						<Text className="text-sm text-gray-600 ml-1">{item.location}</Text>
 					</View>
-					
+
 					{/* Distance and Rating */}
 					<View className="flex-row items-center justify-between">
 						<View className="flex-row items-center">
 							<Ionicons name="walk" size={16} color="#10B981" />
-							<Text className="text-sm text-green-600 ml-1">{item.distance}</Text>
+							<Text className="text-sm text-green-600 ml-1">
+								{item.distance}
+							</Text>
 						</View>
 						<View className="flex-row items-center">
 							<Ionicons name="star" size={16} color="#FCD34D" />
@@ -280,7 +297,7 @@ export default function Grab() {
 							<Text className="text-lg text-gray-600 mb-4">
 								{selectedItem.description}
 							</Text>
-							
+
 							<View className="flex-row items-center justify-between mb-4">
 								<Text className="text-lg font-semibold text-green-600">
 									Donated by {selectedItem.donor}
@@ -296,8 +313,10 @@ export default function Grab() {
 
 						{/* Quality Assessment */}
 						<View className="mb-6">
-							<Text className="text-xl font-bold text-black mb-4">Quality Assessment</Text>
-							
+							<Text className="text-xl font-bold text-black mb-4">
+								Quality Assessment
+							</Text>
+
 							<View className="space-y-3">
 								<View className="flex-row items-center justify-between">
 									<Text className="text-lg text-gray-700">Fabric Quality</Text>
@@ -305,21 +324,21 @@ export default function Grab() {
 										{selectedItem.quality.fabric}
 									</Text>
 								</View>
-								
+
 								<View className="flex-row items-center justify-between">
 									<Text className="text-lg text-gray-700">Wear Level</Text>
 									<Text className="text-lg font-semibold text-yellow-600">
 										{selectedItem.quality.wear}
 									</Text>
 								</View>
-								
+
 								<View className="flex-row items-center justify-between">
 									<Text className="text-lg text-gray-700">Cleanliness</Text>
 									<Text className="text-lg font-semibold text-green-600">
 										{selectedItem.quality.cleanliness}
 									</Text>
 								</View>
-								
+
 								<View className="flex-row items-center justify-between">
 									<Text className="text-lg text-gray-700">Overall Rating</Text>
 									<View className="flex-row items-center">
@@ -328,11 +347,15 @@ export default function Grab() {
 										</Text>
 										<View className="flex-row">
 											{[...Array(5)].map((_, i) => (
-												<Ionicons 
-													key={i} 
-													name="star" 
-													size={16} 
-													color={i < Math.floor(selectedItem.quality.overall) ? "#FCD34D" : "#D1D5DB"} 
+												<Ionicons
+													key={i}
+													name="star"
+													size={16}
+													color={
+														i < Math.floor(selectedItem.quality.overall)
+															? "#FCD34D"
+															: "#D1D5DB"
+													}
 												/>
 											))}
 										</View>
@@ -343,7 +366,9 @@ export default function Grab() {
 
 						{/* Location Details */}
 						<View className="mb-6">
-							<Text className="text-xl font-bold text-black mb-4">Pickup Location</Text>
+							<Text className="text-xl font-bold text-black mb-4">
+								Pickup Location
+							</Text>
 							<View className="bg-gray-50 rounded-xl p-4">
 								<View className="flex-row items-center mb-2">
 									<Ionicons name="location" size={20} color="#10B981" />
@@ -362,17 +387,21 @@ export default function Grab() {
 
 						{/* Action Buttons */}
 						<View className="flex-row gap-4">
-							<TouchableOpacity 
+							<TouchableOpacity
 								className="flex-1 bg-yellow-500 px-6 py-4 rounded-xl"
 								onPress={() => setShowQualityInspection(false)}
 							>
-								<Text className="text-white text-lg font-bold text-center">Back</Text>
+								<Text className="text-white text-lg font-bold text-center">
+									Back
+								</Text>
 							</TouchableOpacity>
-							<TouchableOpacity 
+							<TouchableOpacity
 								className="flex-1 bg-green-500 px-6 py-4 rounded-xl"
 								onPress={() => handleGrabItem(selectedItem)}
 							>
-								<Text className="text-white text-lg font-bold text-center">Grab It!</Text>
+								<Text className="text-white text-lg font-bold text-center">
+									Grab It!
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</ScrollView>
@@ -382,11 +411,7 @@ export default function Grab() {
 	);
 
 	const renderMapView = () => (
-		<Modal
-			visible={showMap}
-			animationType="slide"
-			transparent={false}
-		>
+		<Modal visible={showMap} animationType="slide" transparent={false}>
 			<SafeAreaView className="flex-1 bg-white">
 				{/* Map Header */}
 				<View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-200">
@@ -401,7 +426,9 @@ export default function Grab() {
 				<View className="flex-1 bg-gray-200 items-center justify-center">
 					<View className="w-80 h-80 bg-green-100 rounded-xl items-center justify-center">
 						<Ionicons name="map" size={80} color="#10B981" />
-						<Text className="text-lg font-bold text-green-600 mt-4">Interactive Map</Text>
+						<Text className="text-lg font-bold text-green-600 mt-4">
+							Interactive Map
+						</Text>
 						<Text className="text-sm text-gray-600 text-center mt-2">
 							Tap on markers to view items
 						</Text>
@@ -412,10 +439,14 @@ export default function Grab() {
 				<View className="px-4 py-4 bg-white border-t border-gray-200">
 					<View className="flex-row gap-4">
 						<TouchableOpacity className="flex-1 bg-green-500 px-4 py-3 rounded-xl">
-							<Text className="text-white font-bold text-center">Refresh Map</Text>
+							<Text className="text-white font-bold text-center">
+								Refresh Map
+							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity className="flex-1 bg-blue-500 px-4 py-3 rounded-xl">
-							<Text className="text-white font-bold text-center">My Location</Text>
+							<Text className="text-white font-bold text-center">
+								My Location
+							</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -427,8 +458,8 @@ export default function Grab() {
 		<SafeAreaView className="flex-1 bg-gray-50">
 			{renderHeader()}
 			{renderFilters()}
-			
-			<ScrollView className="flex-1 px-4 py-4" showsVerticalScrollIndicator={false}>
+
+			<ScrollView className="px-4 py-4" showsVerticalScrollIndicator={false}>
 				<View className="mb-4">
 					<Text className="text-lg font-bold text-black mb-2">
 						{sortedItems.length} items available nearby
@@ -437,7 +468,7 @@ export default function Grab() {
 						Tap on items to inspect quality before grabbing
 					</Text>
 				</View>
-				
+
 				{sortedItems.map(renderItemCard)}
 			</ScrollView>
 
