@@ -1,4 +1,6 @@
 import { Image, ImageBackground } from "expo-image";
+import { useNavigation } from "expo-router";
+import { useLayoutEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -6,9 +8,26 @@ import Greetings from "../components/Greetings";
 import List from "../components/home/List";
 import ReWear from "../components/home/ReWear";
 import WearIndex from "../components/home/WearIndex";
-let Rectangle = require("../../assets/images/rectangle.png");
 
-export default function Index() {
+let Rectangle = require("../../../assets/images/rectangle.png");
+
+export default function HomeScreen() {
+	const navigation = useNavigation();
+
+	// Dynamically configure header for this screen
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: "Ecofit",
+			headerTitleAlign: "center",
+			headerStyle: { backgroundColor: "#81d334" },
+			headerTintColor: "#fff",
+			headerTitleStyle: {
+				fontFamily: "Quicksand-Bold",
+				fontSize: 24,
+			},
+		});
+	}, [navigation]);
+
 	const months = [
 		{ name: "Jan", active: true, color: "red" },
 		{ name: "Feb", active: true, color: "yellow" },
@@ -23,6 +42,7 @@ export default function Index() {
 		{ name: "Nov", active: false, color: "gray" },
 		{ name: "Dec", active: false, color: "gray" },
 	];
+
 	const getMonthButtonStyle = (month: any) => {
 		if (!month.active) {
 			return "bg-white border-2 border-gray-300";
@@ -40,11 +60,11 @@ export default function Index() {
 		}
 	};
 
-	const getMonthTextStyle = (month: any) => {
-		return month.active
+	const getMonthTextStyle = (month: any) =>
+		month.active
 			? "text-white font-quicksand_bold"
 			: "text-gray-600 font-quicksand_bold";
-	};
+
 	return (
 		<SafeAreaView className="flex-1 bg-white">
 			{/* Sticky Top Nav */}
@@ -70,7 +90,7 @@ export default function Index() {
 					<Image
 						style={{ height: 50, width: 50 }}
 						contentFit="contain"
-						source={require("../../assets/images/logo.svg")}
+						source={require("../../../assets/images/logo.svg")}
 					/>
 					<Text className="text-4xl font-quicksand_bold text-white">
 						ecofit
@@ -92,25 +112,24 @@ export default function Index() {
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ paddingBottom: 100 }}
 			>
-				<View className="py-10"></View>
-				{/* Div Container */}
-				<View className="flex-1 gap-8 p-6">
+				<View className="flex-1 gap-8 p-6 pt-2">
 					<Greetings name="Christiane" />
+
 					{/* Stats Section */}
 					<View className="flex-row gap-4 justify-center items-center">
-						{/* Wear Index and ReWear Stats */}
 						<View className="flex-3 gap-4">
 							<WearIndex percentage="100" />
 							<ReWear totalrewear="1000" donated="100" sold="100" />
 						</View>
 						<View className="flex-2">
 							<Image
-								source={require("../../assets/images/robot-happy.png")}
+								source={require("../../../assets/images/robot-happy.png")}
 								style={{ height: 300 }}
 								contentFit="contain"
 							/>
 						</View>
 					</View>
+
 					{/* Monthly Buttons */}
 					<View className="flex-row flex-wrap gap-2 mb-6">
 						{months.map((month, index) => (
@@ -129,8 +148,9 @@ export default function Index() {
 
 					{/* Recent ReWears */}
 					<View className="flex-1 gap-2">
-						<Text className="font-quicksand_medium">Recent ReWears</Text>
-
+						<Text className="font-quicksand_medium text-lg">
+							Recent ReWears
+						</Text>
 						<List />
 					</View>
 				</View>
