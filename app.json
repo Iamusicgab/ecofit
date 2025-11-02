@@ -40,7 +40,14 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you select clothing images.",
+          "cameraPermission": "The app accesses your camera to let you take photos of your clothing."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

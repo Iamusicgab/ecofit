@@ -2,6 +2,8 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import "./global.css";
 
+let Rectangle = require("../assets/images/rectangle.png");
+
 export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
 		"Quicksand-Regular": require("../assets/fonts/quicksand-regular.ttf"),
@@ -15,22 +17,14 @@ export default function RootLayout() {
 	return (
 		<Stack
 			screenOptions={{
-				headerStyle: { backgroundColor: "#81d334" },
-				headerTintColor: "#fff",
 				headerTitleStyle: {
 					fontWeight: "bold",
 					fontFamily: "Quicksand-Bold",
 				},
+				headerShadowVisible: false,
+				headerTransparent: true,
+				headerShown: false,
 			}}
-		>
-			{/* Wrap your tabs inside the stack */}
-			<Stack.Screen
-				name="(tabs)"
-				options={{
-					headerShown: false,
-					title: "ReWear",
-				}}
-			/>
-		</Stack>
+		></Stack>
 	);
 }

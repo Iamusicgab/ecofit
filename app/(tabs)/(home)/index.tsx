@@ -1,32 +1,21 @@
-import { Image, ImageBackground } from "expo-image";
-import { useNavigation } from "expo-router";
-import { useLayoutEffect } from "react";
+import { Image } from "expo-image";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Greetings from "../components/Greetings";
 import List from "../components/home/List";
 import ReWear from "../components/home/ReWear";
 import WearIndex from "../components/home/WearIndex";
 
-let Rectangle = require("../../../assets/images/rectangle.png");
+import Header from "../components/Header";
+
+let HappyRobot = require("../../../assets/images/robot-happy.png");
+let MidRobot = require("../../../assets/images/robot-mid.png");
+let SadRobot = require("../../../assets/images/robot-sad.png");
 
 export default function HomeScreen() {
-	const navigation = useNavigation();
-
 	// Dynamically configure header for this screen
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			headerTitle: "Ecofit",
-			headerTitleAlign: "center",
-			headerStyle: { backgroundColor: "#81d334" },
-			headerTintColor: "#fff",
-			headerTitleStyle: {
-				fontFamily: "Quicksand-Bold",
-				fontSize: 24,
-			},
-		});
-	}, [navigation]);
+	const insets = useSafeAreaInsets();
 
 	const months = [
 		{ name: "Jan", active: true, color: "red" },
@@ -66,53 +55,16 @@ export default function HomeScreen() {
 			: "text-gray-600 font-quicksand_bold";
 
 	return (
-		<SafeAreaView className="flex-1 bg-white">
-			{/* Sticky Top Nav */}
-			<View
-				style={{
-					position: "absolute",
-					top: 0,
-					left: 0,
-					right: 0,
-					zIndex: 50,
-				}}
-			>
-				<ImageBackground
-					source={Rectangle}
-					style={{
-						flexDirection: "row",
-						justifyContent: "space-between",
-						alignItems: "center",
-						padding: 16,
-						paddingVertical: 60,
-					}}
-				>
-					<Image
-						style={{ height: 50, width: 50 }}
-						contentFit="contain"
-						source={require("../../../assets/images/logo.svg")}
-					/>
-					<Text className="text-4xl font-quicksand_bold text-white">
-						ecofit
-					</Text>
-					<Image
-						style={{
-							height: 50,
-							width: 50,
-							borderRadius: 15,
-							borderColor: "white",
-							borderWidth: 2,
-						}}
-						contentFit="cover"
-						source="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&fm=jpg&q=60&w=3000"
-					/>
-				</ImageBackground>
-			</View>
+		<View className="flex-1 bg-white">
+			<Header title="ecofit" />
 			<ScrollView
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ paddingBottom: 100 }}
+				contentContainerStyle={{
+					paddingBottom: 100,
+					paddingTop: insets.top + 80,
+				}}
 			>
-				<View className="flex-1 gap-8 p-6 pt-2">
+				<View className="flex-1 gap-8 px-6">
 					<Greetings name="Christiane" />
 
 					{/* Stats Section */}
@@ -123,7 +75,7 @@ export default function HomeScreen() {
 						</View>
 						<View className="flex-2">
 							<Image
-								source={require("../../../assets/images/robot-happy.png")}
+								source={HappyRobot}
 								style={{ height: 300 }}
 								contentFit="contain"
 							/>
@@ -155,6 +107,6 @@ export default function HomeScreen() {
 					</View>
 				</View>
 			</ScrollView>
-		</SafeAreaView>
+		</View>
 	);
 }
