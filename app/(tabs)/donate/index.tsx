@@ -170,9 +170,6 @@ export default function Donate() {
 					paddingTop: insets.top + 80,
 				}}
 			>
-				<Text className="text-xl font-quicksand_bold mb-4">
-					Select an organization
-				</Text>
 				<View className="gap-3">
 					{organizations.map((org) => (
 						<TouchableOpacity
@@ -228,9 +225,6 @@ export default function Donate() {
 					paddingTop: insets.top + 80,
 				}}
 			>
-				<Text className="text-2xl font-quicksand_bold mb-2">
-					Donate Pending
-				</Text>
 				<Text className="text-gray-700 mb-6">
 					Bring the items to the drop-off location below.
 				</Text>
