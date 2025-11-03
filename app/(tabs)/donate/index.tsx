@@ -1,302 +1,205 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-let Rectangle = require("../../../assets/images/rectangle.png");
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Header from "../components/Header";
+
+type InventoryItem = {
+	id: number;
+	name: string;
+	status: string;
+};
+
+type Organization = {
+	id: number;
+	name: string;
+	focus: string;
+	address: string;
+	distance: string;
+};
 
 export default function Donate() {
-	const [activeTab, setActiveTab] = useState("goals");
-	const [selectedGoal, setSelectedGoal] = useState(null);
-	const [selectedMonth, setSelectedMonth] = useState(null);
+	const insets = useSafeAreaInsets();
+	const [step, setStep] = useState<"select" | "org" | "pending">("select");
+	const [selected, setSelected] = useState<Set<number>>(new Set());
+	const [chosenOrg, setChosenOrg] = useState<Organization | null>(null);
 
-	// Sustainability goals data
-	const sustainabilityGoals = [
+	// Reuse the same kind of data as in `clothes/index.tsx`
+	const inventoryItems: InventoryItem[] = [
+		{ id: 1, name: "Shirt1", status: "Occasionally used" },
+		{ id: 2, name: "Shirt2", status: "Occasionally used" },
+		{ id: 3, name: "Pants1", status: "Rarely used" },
+		{ id: 4, name: "Jacket1", status: "Occasionally used" },
+	];
+
+	const organizations: Organization[] = [
 		{
 			id: 1,
-			title: "Avoid buying clothes for 30 days",
-			completed: true,
-			progress: 100,
-			icon: "checkmark-circle",
-			color: "green",
+			name: "Green Threads Foundation",
+			focus: "Disaster relief clothing",
+			address: "123 Riverside Ave, City Center",
+			distance: "0.6 km",
 		},
 		{
 			id: 2,
-			title:
-				"Rewear each item in my closet at least 5 times before adding anything",
-			completed: false,
-			progress: 60,
-			icon: "time",
-			color: "gray",
+			name: "Warm Hearts NGO",
+			focus: "Homeless outreach",
+			address: "45 Oak Street, Midtown",
+			distance: "1.1 km",
 		},
 		{
 			id: 3,
-			title: "Donate or resell at least 10 items this season",
-			completed: false,
-			progress: 30,
-			icon: "time",
-			color: "gray",
-		},
-		{
-			id: 4,
-			title: "Buy only second-hand clothes for 3 months",
-			completed: false,
-			progress: 0,
-			icon: "time",
-			color: "gray",
-		},
-		{
-			id: 5,
-			title: "Organize a clothing swap with friends",
-			completed: false,
-			progress: 0,
-			icon: "time",
-			color: "gray",
+			name: "Ask Helps",
+			focus: "Calamity response",
+			address: "88 Pine Road, West District",
+			distance: "1.8 km",
 		},
 	];
 
-	// Monthly EcoFit index data
-	const monthlyIndex = [
-		{ month: "Jan", score: 75, color: "red", active: true },
-		{ month: "Feb", score: 60, color: "yellow", active: true },
-		{ month: "Mar", score: 80, color: "red", active: true },
-		{ month: "Apr", score: 90, color: "green", active: true },
-		{ month: "May", score: 85, color: "green", active: true },
-		{ month: "Jun", score: 70, color: "red", active: true },
-		{ month: "Jul", score: 65, color: "yellow", active: true },
-		{ month: "Aug", score: 0, color: "gray", active: false },
-		{ month: "Sep", score: 0, color: "gray", active: false },
-		{ month: "Oct", score: 0, color: "gray", active: false },
-		{ month: "Nov", score: 0, color: "gray", active: false },
-		{ month: "Dec", score: 0, color: "gray", active: false },
-	];
-
-	// Smart donation options
-	const smartOptions = [
-		{
-			id: 1,
-			title: "Vintage Denim Jacket",
-			description: "Size M, Brand New",
-			rating: 5,
-			image: "jacket",
-			price: "$45",
-			condition: "Excellent",
-		},
-		{
-			id: 2,
-			title: "Organic Cotton T-Shirt",
-			description: "Size L, Like New",
-			rating: 5,
-			image: "shirt",
-			price: "$25",
-			condition: "Very Good",
-		},
-		{
-			id: 3,
-			title: "Sustainable Jeans",
-			description: "Size 32, Good Condition",
-			rating: 4,
-			image: "jeans",
-			price: "$35",
-			condition: "Good",
-		},
-		{
-			id: 4,
-			title: "Eco-Friendly Dress",
-			description: "Size S, Brand New",
-			rating: 5,
-			image: "dress",
-			price: "$55",
-			condition: "Excellent",
-		},
-	];
-
-	const getGoalIcon = (goal: any) => {
-		if (goal.completed) {
-			return <Ionicons name="checkmark-circle" size={24} color="#10B981" />;
-		}
-		return <Ionicons name="time" size={24} color="#6B7280" />;
+	const toggleSelect = (id: number) => {
+		const next = new Set(selected);
+		if (next.has(id)) next.delete(id);
+		else next.add(id);
+		setSelected(next);
 	};
 
-	const getGoalStyle = (goal: any) => {
-		if (goal.completed) {
-			return "bg-green-100 border-green-500";
-		}
-		return "bg-gray-100 border-gray-300";
+	const proceedToOrg = () => {
+		if (selected.size === 0) return;
+		setStep("org");
 	};
 
-	const getMonthStyle = (month: any) => {
-		if (!month.active) {
-			return "bg-gray-200 border-gray-300";
-		}
-
-		switch (month.color) {
-			case "red":
-				return "bg-red-100 border-red-500";
-			case "yellow":
-				return "bg-yellow-100 border-yellow-500";
-			case "green":
-				return "bg-green-100 border-green-500";
-			default:
-				return "bg-gray-200 border-gray-300";
-		}
+	const chooseOrg = (org: Organization) => {
+		setChosenOrg(org);
+		setStep("pending");
 	};
 
-	const renderHeader = () => (
-		<View className="bg-green-500 px-4 py-6">
-			<View className="flex-row items-center justify-between">
-				<Text className="text-2xl font-bold text-white">
-					Sustainability Goals
+	const resetDonation = () => {
+		setSelected(new Set());
+		setChosenOrg(null);
+		setStep("select");
+	};
+
+	const HeaderBar = (
+		<Header
+			title={
+				step === "select"
+					? "Donate"
+					: step === "org"
+					? "Choose Organization"
+					: "Donate Pending"
+			}
+		/>
+	);
+
+	const SelectItems = (
+		<View className="bg-white">
+			{HeaderBar}
+			<ScrollView
+				className="px-4"
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{
+					paddingBottom: 100,
+					paddingTop: insets.top + 80,
+				}}
+			>
+				<Text className="text-xl font-quicksand_bold mb-4">
+					Choose items to donate
 				</Text>
-				<View className="w-12 h-12 bg-green-600 rounded-full items-center justify-center">
-					<Ionicons name="leaf" size={24} color="white" />
+				<View className="flex-row flex-wrap justify-between">
+					{inventoryItems.map((item) => {
+						const isSelected = selected.has(item.id);
+						return (
+							<TouchableOpacity
+								key={item.id}
+								className={`w-[48%] mb-4 rounded-2xl p-4 border-2 shadow-[0_6px_0px_rgba(229,231,235,1)] ${
+									isSelected
+										? "border-green bg-green-50"
+										: "border-gray-200 bg-white"
+								}`}
+								onPress={() => toggleSelect(item.id)}
+							>
+								<View className="w-full h-32 bg-gray-100 rounded-lg items-center justify-center mb-3">
+									<Ionicons
+										name="shirt"
+										size={32}
+										color={isSelected ? "#16a34a" : "#6b7280"}
+									/>
+								</View>
+								<View className="items-center">
+									<Text className="text-lg font-quicksand_bold text-black mb-1">
+										{item.name}
+									</Text>
+									<Text className="text-sm text-gray-600 font-medium">
+										{item.status}
+									</Text>
+								</View>
+							</TouchableOpacity>
+						);
+					})}
 				</View>
-			</View>
-		</View>
-	);
 
-	const renderTabBar = () => (
-		<View className="flex-row bg-white border-b border-gray-200">
-			<TouchableOpacity
-				className={`flex-1 py-4 items-center ${
-					activeTab === "goals" ? "border-b-2 border-green-500" : ""
-				}`}
-				onPress={() => setActiveTab("goals")}
-			>
-				<Text
-					className={`font-semibold ${
-						activeTab === "goals" ? "text-green-600" : "text-gray-600"
+				<TouchableOpacity
+					disabled={selected.size === 0}
+					className={`mt-2 w-full py-4 rounded-xl ${
+						selected.size === 0
+							? "border-2 border-gray-300 shadow-[0_6px_0px_rgba(229,231,235,1)]"
+							: "border-2 border-green shadow-[0_6px_0px_rgba(129,211,52,1)]"
 					}`}
+					onPress={proceedToOrg}
 				>
-					Goals
-				</Text>
-			</TouchableOpacity>
-			<TouchableOpacity
-				className={`flex-1 py-4 items-center ${
-					activeTab === "smart" ? "border-b-2 border-green-500" : ""
-				}`}
-				onPress={() => setActiveTab("smart")}
+					<Text
+						className={`text-center font-quicksand_bold text-lg ${
+							selected.size === 0 ? "text-gray-300" : "text-green"
+						}`}
+					>
+						Continue ({selected.size})
+					</Text>
+				</TouchableOpacity>
+			</ScrollView>
+		</View>
+	);
+
+	const ChooseOrganization = (
+		<View className=" bg-white">
+			{HeaderBar}
+			<ScrollView
+				className="px-4"
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{
+					paddingBottom: 100,
+					paddingTop: insets.top + 80,
+				}}
 			>
-				<Text
-					className={`font-semibold ${
-						activeTab === "smart" ? "text-green-600" : "text-gray-600"
-					}`}
-				>
-					Smart Options
+				<Text className="text-xl font-quicksand_bold mb-4">
+					Select an organization
 				</Text>
-			</TouchableOpacity>
-		</View>
-	);
-
-	const renderSustainabilityGoals = () => (
-		<View className="px-4 py-6">
-			<Text className="text-2xl font-bold text-black mb-6">ecofit Quest:</Text>
-
-			<View className="space-y-4">
-				{sustainabilityGoals.map((goal) => (
-					<TouchableOpacity
-						key={goal.id}
-						className={`border-2 rounded-xl p-4 ${getGoalStyle(goal)}`}
-						onPress={() => setSelectedGoal(goal)}
-					>
-						<View className="flex-row items-center justify-between">
-							<View className="flex-row items-center flex-1">
-								{getGoalIcon(goal)}
-								<Text className="ml-3 text-lg font-medium text-black flex-1">
-									{goal.title}
-								</Text>
-							</View>
-						</View>
-
-						{/* Progress Bar */}
-						<View className="mt-3">
-							<View className="w-full bg-gray-200 rounded-full h-2">
-								<View
-									className="bg-green-500 h-2 rounded-full"
-									style={{ width: `${goal.progress}%` }}
-								/>
-							</View>
-							<Text className="text-sm text-gray-600 mt-1">
-								{goal.progress}% Complete
-							</Text>
-						</View>
-					</TouchableOpacity>
-				))}
-			</View>
-
-			<Text className="text-2xl font-bold text-black mb-6 mt-8">
-				Monthly ecofit Index:
-			</Text>
-
-			<View className="flex-row flex-wrap gap-2">
-				{monthlyIndex.map((month, index) => (
-					<TouchableOpacity
-						key={index}
-						className={`px-3 py-2 rounded-lg border-2 ${getMonthStyle(month)}`}
-						onPress={() => setSelectedMonth(month)}
-					>
-						<Text
-							className={`text-sm font-medium ${
-								month.active ? "text-black" : "text-gray-500"
-							}`}
-						>
-							{month.month}
-						</Text>
-						{month.active && (
-							<Text className="text-xs text-gray-600">{month.score}%</Text>
-						)}
-					</TouchableOpacity>
-				))}
-			</View>
-		</View>
-	);
-
-	const renderSmartOptions = () => (
-		<View className="px-4 py-6">
-			<Text className="text-2xl font-bold text-black mb-6">Smart Options</Text>
-
-			<ScrollView showsVerticalScrollIndicator={false}>
-				<View className="space-y-4">
-					{smartOptions.map((item) => (
+				<View className="gap-3">
+					{organizations.map((org) => (
 						<TouchableOpacity
-							key={item.id}
-							className="bg-white rounded-xl p-4 shadow-sm border border-gray-200"
+							key={org.id}
+							className="bg-white rounded-xl p-4 border-2 border-gray-200 shadow-[0_6px_0px_rgba(229,231,235,1)]"
+							onPress={() => chooseOrg(org)}
 						>
-							<View className="flex-row items-center">
-								{/* Item Image */}
-								<View className="w-20 h-20 bg-gray-100 rounded-lg items-center justify-center mr-4">
-									<View className="w-16 h-16 bg-orange-500 rounded-lg items-center justify-center">
-										<Ionicons name="shirt" size={32} color="white" />
+							<View className="flex-row items-center justify-between">
+								<View>
+									<Text className="text-lg font-quicksand_bold text-black">
+										{org.name}
+									</Text>
+									<Text className="text-sm text-gray-600">{org.focus}</Text>
+									<View className="flex-row items-center mt-1">
+										<Ionicons name="location" size={16} color="#10B981" />
+										<Text className="text-sm text-gray-700 ml-1">
+											{org.address}
+										</Text>
 									</View>
 								</View>
-
-								{/* Item Details */}
-								<View className="flex-1">
-									<Text className="text-lg font-bold text-black mb-1">
-										{item.title}
+								<View className="items-end">
+									<Text className="text-sm text-green-700 font-quicksand_semibold">
+										{org.distance}
 									</Text>
-									<Text className="text-sm text-gray-600 mb-2">
-										{item.description}
-									</Text>
-
-									{/* Rating */}
-									<View className="flex-row items-center mb-2">
-										{[...Array(5)].map((_, i) => (
-											<Ionicons
-												key={i}
-												name="star"
-												size={16}
-												color={i < item.rating ? "#FCD34D" : "#D1D5DB"}
-											/>
-										))}
-									</View>
-
-									<View className="flex-row items-center justify-between">
-										<Text className="text-lg font-bold text-green-600">
-											{item.price}
-										</Text>
-										<Text className="text-sm text-gray-500">
-											{item.condition}
+									<View className="mt-2 bg-green-600 rounded-full px-3 py-1">
+										<Text className="text-white font-quicksand_bold">
+											Donate here
 										</Text>
 									</View>
 								</View>
@@ -304,72 +207,96 @@ export default function Donate() {
 						</TouchableOpacity>
 					))}
 				</View>
+
+				<TouchableOpacity className="mt-4" onPress={() => setStep("select")}>
+					<Text className="text-center text-gray-600">
+						Back to item selection
+					</Text>
+				</TouchableOpacity>
 			</ScrollView>
 		</View>
 	);
 
-	const renderGoalSetting = () => (
-		<View className="px-4 py-6">
-			<Text className="text-2xl font-bold text-black mb-6">Goal Setting:</Text>
+	const DonatePending = (
+		<View className="bg-white">
+			{HeaderBar}
+			<ScrollView
+				className="px-4"
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{
+					paddingBottom: 100,
+					paddingTop: insets.top + 80,
+				}}
+			>
+				<Text className="text-2xl font-quicksand_bold mb-2">
+					Donate Pending
+				</Text>
+				<Text className="text-gray-700 mb-6">
+					Bring the items to the drop-off location below.
+				</Text>
 
-			<TouchableOpacity className="bg-green-100 border-2 border-green-500 rounded-xl p-4 mb-6">
-				<View className="flex-row items-center">
-					<Ionicons name="checkmark-circle" size={24} color="#10B981" />
-					<Text className="ml-3 text-lg font-bold text-green-700">
-						Avoid buying clothes for 30 days
-					</Text>
+				{/* Selected items summary */}
+				<View className="mb-6">
+					<Text className="text-lg font-quicksand_semibold mb-2">Items</Text>
+					<View className="flex-row flex-wrap gap-2">
+						{inventoryItems
+							.filter((i) => selected.has(i.id))
+							.map((i) => (
+								<View
+									key={i.id}
+									className="px-3 py-2 rounded-full bg-gray-100 border border-gray-200"
+								>
+									<Text className="text-sm text-gray-800">{i.name}</Text>
+								</View>
+							))}
+					</View>
 				</View>
-			</TouchableOpacity>
 
-			<View className="space-y-3">
-				<Text className="text-lg text-gray-700">
-					• Buy no new clothes for 30 days
-				</Text>
-				<Text className="text-lg text-gray-700">
-					• Rewear each item in my closet at least 5 times before adding
-					anything
-				</Text>
-				<Text className="text-lg text-gray-700">
-					• Donate or resell at least 10 items this season
-				</Text>
-			</View>
-
-			<Text className="text-2xl font-bold text-black mb-6 mt-8">
-				Goal Tracker:
-			</Text>
-
-			<View className="flex-row flex-wrap gap-2">
-				{monthlyIndex.map((month, index) => (
-					<TouchableOpacity
-						key={index}
-						className={`px-3 py-2 rounded-lg border-2 ${getMonthStyle(month)}`}
-						onPress={() => setSelectedMonth(month)}
-					>
-						<Text
-							className={`text-sm font-medium ${
-								month.active ? "text-black" : "text-gray-500"
-							}`}
-						>
-							{month.month}
+				{/* Organization and location */}
+				{chosenOrg && (
+					<View className="mb-6 bg-green-50 border-2 border-green-200 rounded-xl p-4">
+						<Text className="text-lg font-quicksand_bold text-green-800">
+							{chosenOrg.name}
 						</Text>
-						{month.active && (
-							<Text className="text-xs text-gray-600">{month.score}%</Text>
-						)}
+						<Text className="text-sm text-green-800 mt-1">
+							{chosenOrg.focus}
+						</Text>
+						<View className="flex-row items-center mt-3">
+							<Ionicons name="location" size={18} color="#059669" />
+							<Text className="ml-2 text-base text-green-900">
+								{chosenOrg.address}
+							</Text>
+						</View>
+						<Text className="mt-2 text-sm text-green-900">
+							Approx. {chosenOrg.distance} away
+						</Text>
+					</View>
+				)}
+
+				<View className="flex-row gap-2">
+					<TouchableOpacity
+						className="flex-1 bg-gray-200 py-4 rounded-xl"
+						onPress={resetDonation}
+					>
+						<Text className="text-center text-gray-800 font-quicksand_bold">
+							Cancel
+						</Text>
 					</TouchableOpacity>
-				))}
-			</View>
+					<TouchableOpacity className="flex-1 bg-green-600 py-4 rounded-xl">
+						<Text className="text-center text-white font-quicksand_bold">
+							Mark as Delivered
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
 		</View>
 	);
 
 	return (
-		<SafeAreaView className="flex-1 bg-white">
-			{renderHeader()}
-			{renderTabBar()}
-			<StatusBar style="light" backgroundColor="#22C55E" translucent={false} />
-			<ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-				{activeTab === "goals" && renderSustainabilityGoals()}
-				{activeTab === "smart" && renderSmartOptions()}
-			</ScrollView>
-		</SafeAreaView>
+		<View className="bg-white">
+			{step === "select" && SelectItems}
+			{step === "org" && ChooseOrganization}
+			{step === "pending" && DonatePending}
+		</View>
 	);
 }

@@ -67,18 +67,6 @@ export default function TabsLayout() {
 					),
 				})}
 			</NativeTabs.Trigger>
-			<NativeTabs.Trigger name="testing">
-				<Label>testing</Label>
-				<Badge>12</Badge>
-				{Platform.select({
-					ios: <Icon sf="0.circle" drawable="custom_0.circle_drawable"></Icon>,
-					android: (
-						<Icon
-							src={<VectorIcon family={Ionicons} name="hand-right" />}
-						></Icon>
-					),
-				})}
-			</NativeTabs.Trigger>
 		</NativeTabs>
 	);
 }
