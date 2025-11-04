@@ -1,7 +1,18 @@
 {
   "build": {
-    "production": {}
-
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  },
+  "cli": {
+    "appVersionSource": "local"
   }
-
 }

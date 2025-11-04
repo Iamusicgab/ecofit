@@ -1,10 +1,64 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, ImageBackground } from "expo-image";
+import { router } from "expo-router";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useAuth } from "../../../providers/AuthProvider";
+import { getUserDocument } from "../../../utils/firestoreUtils";
 
 let Rectangle = require("../../../assets/images/rectangle.png");
 
 function Header(props: any) {
+	const [photoUrl, setPhotoUrl] = React.useState<string | null>(null);
+	const { signOut, user } = useAuth();
+
+	React.useEffect(() => {
+		const fetchUserPhoto = async () => {
+			try {
+				console.log("Auth user from context:", user);
+				const uid = user?.uid;
+				console.log("Current user UID:", uid);
+
+				if (!uid) {
+					console.log("No authenticated user found");
+					return;
+				}
+
+				const { data, error } = await getUserDocument(uid);
+
+				if (error) {
+					console.log("Error fetching user data:", error);
+					return;
+				}
+
+				console.log("User data fetched successfully:", data);
+				if (data?.photoUrl) {
+					console.log("Setting photo URL:", data.photoUrl);
+					setPhotoUrl(data.photoUrl as string);
+				} else {
+					console.log("No photoUrl found in user data");
+				}
+			} catch (error) {
+				console.log("Unexpected error fetching user photo:", error);
+				// Silently fail - user photo is not critical
+			}
+		};
+
+		// Only fetch when user is available
+		if (user) {
+			fetchUserPhoto();
+		}
+	}, [user]);
+
+	const handleSignOut = async () => {
+		try {
+			await signOut();
+			router.replace("/(auth)/login");
+		} catch (error) {
+			console.error("Sign out error:", error);
+		}
+	};
+
 	return (
 		<View
 			style={{
@@ -35,7 +89,8 @@ function Header(props: any) {
 						{props.title}
 					</Text>
 				</View>
-				{props.icon && (
+
+				<TouchableOpacity onPress={handleSignOut}>
 					<Image
 						style={{
 							height: 40,
@@ -45,9 +100,9 @@ function Header(props: any) {
 							borderWidth: 1.5,
 						}}
 						contentFit="cover"
-						source="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?ixlib=rb-4.1.0&fm=jpg&q=60&w=3000"
+						source={photoUrl}
 					/>
-				)}
+				</TouchableOpacity>
 			</ImageBackground>
 		</View>
 	);

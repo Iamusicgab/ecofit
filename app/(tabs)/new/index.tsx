@@ -1,21 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuth } from "../../../providers/AuthProvider";
+import { ClothingService } from "../../../services/clothingService";
 
 import Header from "../components/Header";
 
 export default function NewClothing() {
 	const insets = useSafeAreaInsets();
+	const { user } = useAuth();
 	const [currentStep, setCurrentStep] = useState(1);
+	const [saving, setSaving] = useState(false);
 	const [formData, setFormData] = useState<{
 		image: string | null;
-		clothingType: string;
+		clothingType: "upperwear" | "lowerwear" | "accessories" | "";
 		newlyBought: boolean | null;
 		impulsivelyBought: boolean | null;
-		usageFrequency: string;
+		usageFrequency: "rarely" | "occasionally" | "frequently" | "";
 	}>({
 		image: null,
 		clothingType: "",
@@ -101,7 +106,9 @@ export default function NewClothing() {
 		}
 	};
 
-	const handleClothingType = (type: string) => {
+	const handleClothingType = (
+		type: "upperwear" | "lowerwear" | "accessories"
+	) => {
 		setFormData({ ...formData, clothingType: type });
 		handleNext();
 	};
@@ -116,9 +123,58 @@ export default function NewClothing() {
 		handleNext();
 	};
 
-	const handleUsageFrequency = (frequency: string) => {
+	const handleUsageFrequency = (
+		frequency: "rarely" | "occasionally" | "frequently"
+	) => {
 		setFormData({ ...formData, usageFrequency: frequency });
 		handleNext();
+	};
+
+	const handleSaveClothing = async () => {
+		if (!user) {
+			Alert.alert("Error", "You must be logged in to add clothing items.");
+			return;
+		}
+
+		if (
+			!formData.image ||
+			!formData.clothingType ||
+			formData.newlyBought === null ||
+			formData.impulsivelyBought === null ||
+			!formData.usageFrequency
+		) {
+			Alert.alert("Error", "Please complete all steps before saving.");
+			return;
+		}
+
+		setSaving(true);
+		try {
+			await ClothingService.addClothingItem(user.uid, formData.image, {
+				clothingType: formData.clothingType,
+				isNewlyBought: formData.newlyBought,
+				isImpulsivelyBought: formData.impulsivelyBought,
+				usageFrequency: formData.usageFrequency,
+			});
+
+			Alert.alert(
+				"Success!",
+				"Your clothing item has been added to your wardrobe.",
+				[
+					{
+						text: "OK",
+						onPress: () => router.replace("/(tabs)/(home)"),
+					},
+				]
+			);
+		} catch (error) {
+			console.error("Error saving clothing:", error);
+			Alert.alert(
+				"Error",
+				"Failed to save your clothing item. Please try again."
+			);
+		} finally {
+			setSaving(false);
+		}
 	};
 
 	const renderStep1 = () => (
@@ -205,7 +261,7 @@ export default function NewClothing() {
 			<View className="gap-4">
 				<TouchableOpacity
 					className="border-2 border-green bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(129,211,52,1)]"
-					onPress={() => handleClothingType("Upperwear")}
+					onPress={() => handleClothingType("upperwear")}
 				>
 					<Text className="text-green font-quicksand_semibold text-lg text-center">
 						Upperwear
@@ -214,7 +270,7 @@ export default function NewClothing() {
 
 				<TouchableOpacity
 					className="border-2 border-green bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(129,211,52,1)]"
-					onPress={() => handleClothingType("Lowerwear")}
+					onPress={() => handleClothingType("lowerwear")}
 				>
 					<Text className="text-green font-quicksand_semibold text-lg text-center">
 						Lowerwear
@@ -223,7 +279,7 @@ export default function NewClothing() {
 
 				<TouchableOpacity
 					className="border-2 border-green bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(129,211,52,1)]"
-					onPress={() => handleClothingType("Addwear")}
+					onPress={() => handleClothingType("accessories")}
 				>
 					<Text className="text-green font-quicksand_semibold text-lg text-center">
 						Addwear
@@ -298,7 +354,7 @@ export default function NewClothing() {
 			<View className="gap-4">
 				<TouchableOpacity
 					className="border-2 border-green bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(129,211,52,1)]"
-					onPress={() => handleUsageFrequency("Frequently")}
+					onPress={() => handleUsageFrequency("frequently")}
 				>
 					<Text className="text-green font-quicksand_semibold text-lg text-center">
 						Frequently
@@ -310,7 +366,7 @@ export default function NewClothing() {
 
 				<TouchableOpacity
 					className="border-2 border-yellow-500 bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(250,204,21,1)]"
-					onPress={() => handleUsageFrequency("Occasionally")}
+					onPress={() => handleUsageFrequency("occasionally")}
 				>
 					<Text className="text-yellow-600 font-quicksand_semibold text-lg text-center">
 						Occasionally
@@ -322,7 +378,7 @@ export default function NewClothing() {
 
 				<TouchableOpacity
 					className="border-2 border-red-500 bg-white px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(239,68,68,1)]"
-					onPress={() => handleUsageFrequency("Rarely")}
+					onPress={() => handleUsageFrequency("rarely")}
 				>
 					<Text className="text-red-600 font-quicksand_semibold text-lg text-center">
 						Rarely
@@ -385,14 +441,12 @@ export default function NewClothing() {
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
+					disabled={saving}
 					className="flex-1 border-2 border-green px-6 py-4 rounded-2xl shadow-[0_4px_0px_rgba(129,211,52,1)]"
-					onPress={() => {
-						// Handle completion
-						console.log("Clothing added:", formData);
-					}}
+					onPress={handleSaveClothing}
 				>
 					<Text className="text-green font-quicksand_semibold text-lg text-center">
-						Done
+						{saving ? "Saving..." : "Done"}
 					</Text>
 				</TouchableOpacity>
 			</View>
